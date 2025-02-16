@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         imdb.com / add torrent link
 // @namespace    http://tampermonkey.net/
-// @version      2025-02-16
+// @version      2025-02-16-2
 // @description  adds a link to search for torrents for the movie
 // @author       You
 // @match        https://www.imdb.com/title/tt*
