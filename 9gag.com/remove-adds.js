@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         9gag.com/remove-adds
 // @namespace    http://tampermonkey.net/
-// @version      2025-02-15
+// @version      2025-02-16
 // @description  try to take over the world!
 // @author       You
 // @match        https://9gag.com/*
