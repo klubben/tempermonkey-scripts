@@ -4,7 +4,7 @@
 // @version      2025-02-16
 // @description  adds a link to search for torrents for the movie
 // @author       You
-// @match        https://imdb.com/title/tt*
+// @match        https://www.imdb.com/title/tt*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=imdb.com
 // @grant        none
 // ==/UserScript==
@@ -17,14 +17,18 @@
         style.innerHTML = `
             .torrent-popup {
                 position: fixed;
-                top: 0;
-                right: 0;
-                width: 100%;
-                height: 100%;
+                top: 10px;
+                right: 10px;
                 background: rgba(255, 255, 255, 0.8);
                 z-index: 1000;
                 color: #000;
                 font-size: 14px;
+                padding: 10px 15px;
+                border-radius: 3px;
+            }
+
+            .torrent-popup p + p {
+                margin-top: 12px;
             }
     `;
         document.getElementsByTagName('head')[0].appendChild(style);
@@ -50,13 +54,13 @@
             "udp://tracker.internetwarriors.net:1337",
         ]
 
-        return `agnet:?xt=urn:btih:${hash}&dn=${encodeURIComponent(name)}&tr=${trackers.join('&tr=')}`;
+        return `magnet:?xt=urn:btih:${hash}&dn=${encodeURIComponent(name)}&tr=${trackers.join('&tr=')}`;
     }
 
     function createTorrent(popup, torrent) {
         const el = document.createElement('p');
         el.innerHTML = `
-            Quality: <b>${torrent.quality} (${torrent.type})</b> <a href="${createMagnet(torrent.hash, torren.movie_title)}" target="_blank">🧲</a><br />
+            Quality: <b>${torrent.quality} (${torrent.type})</b> <a href="${createMagnet(torrent.hash, torrent.movie_title)}" target="_blank">🧲</a><br />
             Size: <b>${torrent.size}</b><br />
             Seeds/peers: <b>${torrent.seeds} / ${torrent.peers}</b><br />
         `;
@@ -66,13 +70,15 @@
 
     const imdb_id = window.location.href.match(/tt\d+/)[0] ?? 0;
     fetch(`https://yts.mx/api/v2/movie_details.json?imdb_id=${imdb_id}`).then(response => response.json()).then(resp => {
-        if (resp.data.movie.id > 0) {
-            createStyle();
-            const popup = createPopup();
+        createStyle();
+        const popup = createPopup();
 
+        if (resp.data.movie.id > 0) {
             resp.data.movie.torrents.forEach(torrent => {
                 createTorrent(popup, {...torrent, movie_title: resp.data.movie.title_english});
             });
+        } else {
+            popup.innerHTML = 'Torrent not found';
         }
     });
 })();
